@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="878" viewBox="0 0 1200 878" role="img" aria-labelledby="title description" xml:lang="zh-CN">
+  <title id="title">个人任务工作台系统架构</title>
+  <desc id="description">浏览器与 macOS 客户端在各自的运行环境中加载同一份工作台代码。看板与甘特图通过任务 ID 共享任务内容，各自维护排序。两端使用各自的 localStorage。网页版可导出 JSON 备份，Mac 客户端可导入或导出。</desc>
+  <defs>
+    <style>
+      text { font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; fill: #152f47; }
+      .title { font-size: 39px; font-weight: 650; }
+      .subtitle { font-size: 19px; fill: #4b6377; }
+      .heading { font-size: 25px; font-weight: 620; }
+      .label { font-size: 21px; font-weight: 610; }
+      .body { font-size: 17px; fill: #425e72; }
+      .small { font-size: 16px; fill: #466175; }
+      .code { font: 17px Menlo, Consolas, monospace; fill: #24665f; }
+      .file { font: 17px Menlo, Consolas, monospace; fill: #3d6181; }
+      .blue { fill: #1d5e96; }
+      .teal { fill: #20665e; }
+      .ochre { fill: #835019; }
+      .load, .rw, .transfer, .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .load { stroke: #4e7899; stroke-width: 2; marker-end: url(#blueArrow); }
+      .rw { stroke: #36796f; stroke-width: 2; marker-start: url(#greenStart); marker-end: url(#greenEnd); }
+      .transfer { stroke: #996122; stroke-width: 2; stroke-dasharray: 4 4; marker-end: url(#goldArrow); }
+      .icon { stroke: #286499; stroke-width: 2; }
+    </style>
+    <marker id="blueArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#4e7899"/>
+    </marker>
+    <marker id="greenEnd" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#36796f"/>
+    </marker>
+    <marker id="greenStart" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M11 1 L1 6 L11 11 Z" fill="#36796f"/>
+    </marker>
+    <marker id="goldArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#996122"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="878" fill="#fff"/>
+  <text x="44" y="65" class="title">个人任务工作台系统架构</text>
+  <text x="45" y="103" class="subtitle">浏览器与 Mac 客户端运行同一份工作台代码，任务分别保存在各自的本地环境。</text>
+
+  <!-- Separate hosts instantiate the same page. -->
+  <g id="browser-host">
+    <rect x="44" y="135" width="536" height="99" rx="12" fill="#eff5fb" stroke="#b2cbe0"/>
+    <g class="icon" transform="translate(68 158)">
+      <rect x="0" y="1" width="31" height="24" rx="3"/>
+      <path d="M1 8h29 M5 5h1 M10 5h1"/>
+    </g>
+    <text x="114" y="180" class="heading">网页版</text>
+    <text x="68" y="212" class="body">浏览器加载页面，执行工作台的 JavaScript。</text>
+  </g>
+  <g id="mac-host">
+    <rect x="620" y="135" width="536" height="99" rx="12" fill="#eff5fb" stroke="#b2cbe0"/>
+    <g class="icon" transform="translate(645 157)">
+      <rect width="30" height="21" rx="2.5"/>
+      <path d="M15 21v5 M8 27h14"/>
+    </g>
+    <text x="690" y="180" class="heading">Mac 客户端</text>
+    <text x="644" y="212" class="body">AppKit 提供窗口和菜单，WKWebView 加载内置页面。</text>
+  </g>
+  <path d="M310 235v39" class="load"/>
+  <path d="M888 235v39" class="load"/>
+
+  <g id="shared-workspace">
+    <rect x="44" y="276" width="1112" height="352" rx="13" fill="#f7fafd" stroke="#9dbbd1" stroke-width="1.5"/>
+    <text x="68" y="317" class="heading">工作台页面</text>
+    <text x="1132" y="316" text-anchor="end" class="file">web/workspace.html</text>
+
+    <g id="views">
+      <g>
+        <rect x="68" y="340" width="254" height="79" rx="8" fill="#fff" stroke="#c3d6e5"/>
+        <text x="87" y="371" class="label blue">工作概览</text>
+        <text x="87" y="398" class="body">任务统计、截止提醒</text>
+      </g>
+      <g>
+        <rect x="338" y="340" width="254" height="79" rx="8" fill="#fff" stroke="#c3d6e5"/>
+        <text x="357" y="371" class="label blue">任务看板</text>
+        <text x="357" y="398" class="body">按状态分列、拖动卡片</text>
+      </g>
+      <g>
+        <rect x="608" y="340" width="254" height="79" rx="8" fill="#fff" stroke="#c3d6e5"/>
+        <text x="627" y="371" class="label blue">甘特排期</text>
+        <text x="627" y="398" class="body">周／月视图、拖动日期</text>
+      </g>
+      <g>
+        <rect x="878" y="340" width="254" height="79" rx="8" fill="#fff" stroke="#c3d6e5"/>
+        <text x="897" y="371" class="label blue">归档列表</text>
+        <text x="897" y="398" class="body">查看、恢复已归档任务</text>
+      </g>
+      <path d="M195 419v10h810v-10 M465 419v10 M735 419v10" fill="none" stroke="#88aab4" stroke-width="1.5"/>
+      <path d="M600 432v40" class="rw"/>
+      <text x="618" y="458" class="small teal">修改任务、重绘视图</text>
+    </g>
+
+    <g id="state">
+      <rect x="68" y="474" width="1064" height="132" rx="9" fill="#edf6f3" stroke="#a7cbbf"/>
+      <text x="89" y="505" class="label teal">任务状态与排序</text>
+      <text x="1112" y="504" text-anchor="end" class="small">看板卡片和甘特图行通过任务 ID 关联</text>
+      <path d="M89 520h1022 M425 534v51 M787 534v51" fill="none" stroke="#c3dcd3"/>
+      <text x="89" y="549" class="code">tasks[]</text>
+      <text x="89" y="579" class="body">任务内容、状态与看板列内顺序</text>
+      <text x="449" y="549" class="code">groups[] / taskIds[]</text>
+      <text x="449" y="579" class="body">甘特图的组序与组内任务顺序</text>
+      <text x="811" y="549" class="code">archive[]</text>
+      <text x="811" y="579" class="body">归档任务及恢复所需的原位置</text>
+    </g>
+  </g>
+
+  <g id="persistence">
+    <path d="M204 632v66" class="rw"/>
+    <text x="223" y="670" class="small teal">在浏览器内读写</text>
+    <path d="M994 632v66" class="rw"/>
+    <text x="974" y="670" text-anchor="end" class="small teal">在 WKWebView 内读写</text>
+    <rect x="44" y="701" width="325" height="108" rx="10" fill="#f2f8f5" stroke="#9abfb0"/>
+    <text x="66" y="736" class="label teal">浏览器本地存储</text>
+    <text x="66" y="765" class="code">localStorage</text>
+    <text x="66" y="790" class="small">按浏览器配置和网站来源保存</text>
+    <rect x="831" y="701" width="325" height="108" rx="10" fill="#f2f8f5" stroke="#9abfb0"/>
+    <text x="853" y="736" class="label teal">客户端本地存储</text>
+    <text x="853" y="765" class="code">localStorage</text>
+    <text x="853" y="790" class="small">由 WKWebView 持久保存</text>
+  </g>
+
+  <g id="backup-transfer">
+    <rect x="455" y="701" width="290" height="108" rx="10" fill="#fff8eb" stroke="#d4b47c"/>
+    <g fill="none" stroke="#976021" stroke-width="1.8" stroke-linejoin="round" transform="translate(475 719)">
+      <path d="M1 1h12l7 7v16H1z M13 1v8h7 M5 14h10 M5 18h8"/>
+    </g>
+    <text x="505" y="739" class="label ochre">JSON 备份文件</text>
+    <text x="475" y="766" class="small">任务、分组、归档与折叠状态</text>
+    <text x="475" y="790" class="small">按需导出，用于迁移或恢复</text>
+    <path d="M373 755h77" class="transfer"/>
+    <text x="412" y="743" text-anchor="middle" class="small ochre">导出</text>
+    <path d="M749 743h77" class="transfer"/>
+    <text x="788" y="733" text-anchor="middle" class="small ochre">导入</text>
+    <path d="M827 773h-77" class="transfer"/>
+    <text x="788" y="796" text-anchor="middle" class="small ochre">导出</text>
+  </g>
+  <text x="44" y="850" class="small">Mac 导入备份时会校验文件并显示任务数量，用户确认后替换客户端数据。</text>
+</svg>
